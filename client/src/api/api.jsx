@@ -8,7 +8,7 @@ const pluck = (p) => p.then((r) => r.data.result);
 // Fetch all reviews
 export const fetchAll = async () => {
   try {
-    const res = await axios.get(`${API}/reviews/hostaway`);
+    const res = await axios.get(`${API}/api/reviews/hostaway`);
     return res.data.result;
   } catch (err) {
     console.error("Hostaway fetch failed:", err.message);
@@ -18,7 +18,7 @@ export const fetchAll = async () => {
 
 // Toggle approval status of a review
 export const toggleApprove = (id) =>
-  axios.patch(`${API}/reviews/${id}/approve`).then((res) => res.result);
+  axios.patch(`${API}/api/reviews/${id}/approve`).then((res) => res.result);
 
 // Fetch public reviews for a specific listing
 export const fetchPublic = async (listingName) => {
@@ -35,7 +35,7 @@ export const fetchPublic = async (listingName) => {
 
 
 export const fetchPublicListing = (listingName) =>
-  pluck(axios.get(`${API}/listings/public/${encodeURIComponent(listingName)}`));
+  pluck(axios.get(`${API}/api/listings/public/${encodeURIComponent(listingName)}`));
 
 
-export const fetchListings = () => pluck(axios.get(`${API}/listings`));
+export const fetchListings = () => pluck(axios.get(`${API}/api/listings`));
