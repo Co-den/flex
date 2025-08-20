@@ -11,8 +11,10 @@ const app = express();
 
 const allowedOrigins=[
   "https://flex-1-o88e.onrender.com",
-  "http://localhost:5173"
-]
+  "http://localhost:5173",
+  "https://flex-living-virid.vercel.app/"
+];
+
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
