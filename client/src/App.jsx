@@ -52,18 +52,17 @@ export default function App() {
 
           {/* Desktop buttons (md+) */}
           <div className="hidden md:flex items-center gap-3">
+         <button
+              onClick={openDashboard}
+              className="px-4 py-2 bg-orange-600 text-white font-semibold rounded hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400"
+            >
+              Dashboard
+            </button>
             <button
               onClick={() => openPublic(publicListing || "")}
               className="px-4 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
             >
               Public Page
-            </button>
-
-            <button
-              onClick={openDashboard}
-              className="px-4 py-2 bg-orange-600 text-white font-semibold rounded hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400"
-            >
-              Dashboard
             </button>
           </div>
 
