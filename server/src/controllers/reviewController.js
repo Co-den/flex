@@ -5,7 +5,8 @@ const { normalizeRaw } = require("../utils/normalize");
 const fs = require("fs");
 const path = require("path");
 const { ObjectId } = require("mongodb");
-///const { useMockData } = require("../controllers/config");
+const dotenv = require("dotenv"); 
+dotenv.config({path:".env"});
 const calculateAverage = require("../utils/calculateAverage");
 
 
