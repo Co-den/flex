@@ -1,164 +1,165 @@
-# FlexLiving Reviews (MERN)
+🏡 Property Reviews Dashboard
 
-A **full-stack MERN application** for managing and displaying property reviews.
-It includes a **dashboard** for admins to sync/manage reviews and a **public-facing page** for viewing listings with their reviews.
+A modern, mobile-responsive dashboard for property managers to view, manage, and publish guest reviews from multiple platforms.
+
+✨ Features
+
+Manager Dashboard
+
+📊 Per-Property Performance KPIs (avg rating, total reviews, approved reviews, published reviews).
+
+🔍 Filter & Sort reviews by rating, category, channel, or time.
+
+📈 Spot Trends using interactive charts.
+
+✅ Approve & Publish reviews to the public listing.
+
+📱 Fully Responsive – works seamlessly on mobile, tablet, and desktop.
+
+
+Review Integrations
+
+Supports fetching reviews from multiple platforms:
+
+Hostaway (direct API integration).
+
+Airbnb (via API or scraping).
+
+Google Reviews (Google Places API).
+
+
+Public Listings
+
+Clean public-facing review pages per property.
+
+Display only manager-approved reviews.
+
+Optimized for SEO and performance.
+
+
 
 ---
 
-## 🚀 Features
+🚀 Tech Stack
 
-### Admin Dashboard
+Frontend: React + TailwindCSS
 
-* Fetches and displays reviews from external sources.
-* Sync button to update reviews (prevents overwriting `approved` status).
-* Approve/reject reviews.
-* Refresh functionality.
-* Loading spinner & skeleton loading for smoother UX.
+Backend: Node.js + Express
 
-### Public Page
+Database: MongoDB
 
-* Displays property details and reviews.
-* Dropdown selector to switch between listings.
-* Dynamically fetches reviews per property.
-* Displays **splash image** for listings.
+Charts: Recharts
+
+APIs Integrated: Hostaway, Airbnb, Google Places
+
+
 
 ---
 
-## 🛠️ Tech Stack
+📂 Project Structure
 
-* **Frontend:** React, Tailwind CSS
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB (Mongoose ODM)
-* **Other:** Axios (API calls), Concurrently (dev scripts)
-
----
-
-## 📂 Project Structure
-
-```
 .
-├── backend/
-│   ├── models/
-│   │   └── Review.js
-│   ├── routes/
-│   │   └── reviewRoutes.js
-│   ├── mock-data.json
-│   ├── server.js
-│   └── ...
-├── frontend/
+├── client/                 # React frontend
 │   ├── src/
-│   │   ├── pages/
-│   │   │   ├── DashboardPage.jsx
-│   │   │   └── PublicPage.jsx
-│   │   ├── components/
-│   │   │   ├── ReviewCard.jsx
-│   │   │   ├── SkeletonCard.jsx
-│   │   │   └── Spinner.jsx
-│   │   └── App.js
-│   ├── package.json
-│   └── ...
-├── .gitignore
+│   │   ├── components/     # UI components (KPIs, Filters, ReviewTable, etc.)
+│   │   ├── pages/          # Dashboard + Public Review Pages
+│   │   ├── api/            # API client logic
+│   │   └── App.jsx
+│   └── package.json
+│
+├── server/                 # Node.js backend
+│   ├── controllers/        # Review controller logic
+│   ├── models/             # Mongoose schemas
+│   ├── routes/             # API routes
+│   ├── services/           # API integrations (Hostaway, Airbnb, Google)
+│   └── server.js
+│
 ├── README.md
 └── package.json
-```
+
 
 ---
 
-## ⚙️ Installation & Setup
+⚡️ Installation
 
-### 1. Clone the repo
+1. Clone the repo
 
-```bash
-git clone https://github.com/your-username/flexliving-reviews.git
-cd flexliving-reviews
-```
+git clone https://github.com/yourusername/property-reviews-dashboard.git
+cd property-reviews-dashboard
 
-### 2. Install dependencies
+2. Setup backend
 
-Backend:
-
-```bash
-cd backend
+cd server
 npm install
-```
 
-Frontend:
+Create a .env file in server/ with:
 
-```bash
-cd frontend
-npm install
-```
+MONGO_URI=your_mongodb_connection
+HOSTAWAY_API_KEY=your_hostaway_key
+AIRBNB_API_KEY=your_airbnb_key
+GOOGLE_PLACES_API_KEY=your_google_places_key
 
-### 3. Environment Variables
+Run server:
 
-In `/backend/.env`, add:
-
-```
-MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/flexliving
-PORT=5000
-```
-
-### 4. Run the app
-
-Root directory:
-
-```bash
 npm run dev
-```
 
-This will:
+3. Setup frontend
 
-* Start backend on **[http://localhost:5000](http://localhost:5000)**
-* Start frontend on **[http://localhost:3000](http://localhost:3000)**
+cd client
+npm install
+npm start
+
 
 ---
 
-## 📊 API Endpoints
+🌍 API Routes
 
-### Reviews
+GET /api/reviews/hostaway → Fetch Hostaway reviews
 
-* `GET /api/reviews` → Fetch all reviews
-* `POST /api/reviews/sync` → Sync mock-data into DB
-* `PATCH /api/reviews/:id/approve` → Approve/reject a review
-* `GET /api/reviews/:listingName` → Fetch reviews by property
+GET /api/reviews/airbnb → Fetch Airbnb reviews
 
----
+GET /api/reviews/google → Fetch Google Reviews
 
-## 🧪 Assessment Criteria Coverage
+PATCH /api/reviews/:id/approve → Toggle approval status
 
-✅ **Backend**
+GET /api/reviews/public/:listingName → Get public reviews for a listing
 
-* REST endpoints implemented (CRUD + Sync).
-* Validation & separation of controllers/routes.
 
-✅ **Frontend**
-
-* Dashboard for admins.
-* Public page for listings.
-* Debounced fetch & state management.
-* Loading states (spinner + skeleton).
-
-✅ **Extra polish**
-
-* Dropdown to switch listings.
-* Splash images for properties.
 
 ---
 
+📱 Mobile Responsiveness
 
-## 📝 Future Improvements
+Search + filter stack vertically on mobile.
 
-* User authentication for admin dashboard.
-* Pagination & filtering of reviews.
-* Image upload for properties.
-* Deploy frontend + backend (e.g., Netlify + Render).
+KPI cards adapt to grid columns (1 → 2 → 4).
+
+Review table becomes scrollable on small screens.
+
+
+
+---
+
+🔮 Next Steps
+
+Add authentication for managers (login/logout).
+
+Schedule daily sync jobs for fetching new reviews.
+
+Export reviews as CSV/PDF.
+
+AI sentiment analysis for deeper insights.
+
+
 
 ---
 
-## 👨‍💻 Author
+👨‍💻 Author
 
-**Agugbue Ikenna Nzubechi**
-Software Developer | MERN Stack
+Built with ❤️ by [Your Name]
+
 
 ---
+
+Do you want me to also add screenshots/preview images (desktop + mobile) in the README so it looks polished for the assessment?
 
