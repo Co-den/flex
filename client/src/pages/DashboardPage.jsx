@@ -32,6 +32,53 @@ const DashboardPage = () => {
   const [chartListing, setChartListing] = React.useState(null);
   const activeListing = chartListing || listingFilter;
 
+  // CSV export helper
+  const exportApprovedCSV = () => {
+    const approved = reviews.filter((r) => r.approved);
+    if (!approved.length) {
+      alert("No approved reviews to export.");
+      return;
+    }
+
+    const headers = [
+      "guestName",
+      "listingName",
+      "submittedAt",
+      "rating",
+      "publicReview",
+      "categories",
+      "channel",
+      "_id",
+    ];
+
+    const lines = [
+      headers.join(","),
+      ...approved.map((r) => {
+        const vals = [
+          `"${(r.guestName || "").replace(/"/g, '""')}"`,
+          `"${(r.listingName || "").replace(/"/g, '""')}"`,
+          `"${r.submittedAt ? new Date(r.submittedAt).toISOString() : ""}"`,
+          `${r.rating ?? ""}`,
+          `"${(r.publicReview || "").replace(/"/g, '""')}"`,
+          `"${(Array.isArray(r.categories) ? r.categories.map(c => `${c.category}:${c.rating}`).join("|") : "")}"`,
+          `"${(r.channel || "").replace(/"/g, '""')}"`,
+          `"${r._id}"`,
+        ];
+        return vals.join(",");
+      }),
+    ].join("\n");
+
+    const blob = new Blob([lines], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `approved_reviews_${new Date().toISOString()}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   // Filter using the correct fields (publicReview, guestName, listingName)
   const filtered = reviews.filter((r) => {
     const text = (r.publicReview || "").toLowerCase();
@@ -94,35 +141,83 @@ const DashboardPage = () => {
 
   return (
     <>
-      <section className="flex gap-2 mb-4" aria-hidden={loading}>
-        <input
-          className="border px-3 py-2 rounded w-full max-w-xs"
-          placeholder="Search text/guest/listing"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <select
-          className="border px-3 py-2 rounded"
-          value={listingFilter}
-          onChange={(e) => setListingFilter(e.target.value)}
-        >
-          {listings.map((l) => (
-            <option key={l} value={l}>
-              {l}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={refresh}
-          className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Refresh
-        </button>
+      {/* Responsive controls: search + listing select + actions */}
+      <section className="mb-4">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          {/* Left block: search + listing */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 md:gap-3 w-full md:w-auto">
+            {/* Search input — full width on mobile */}
+            <div className="w-full sm:w-auto flex-1">
+              <label htmlFor="search" className="sr-only">
+                Search reviews
+              </label>
+              <input
+                id="search"
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search text / guest / listing"
+                className="w-full md:w-80 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+              />
+            </div>
+
+            {/* Listing filter — full width on mobile, auto on larger */}
+            <div className="w-full sm:w-auto">
+              <label htmlFor="listingFilter" className="sr-only">
+                Filter by listing
+              </label>
+              <select
+                id="listingFilter"
+                value={listingFilter}
+                onChange={(e) => setListingFilter(e.target.value)}
+                className="w-full md:w-56 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+              >
+                {listings.map((l) => (
+                  <option key={l} value={l}>
+                    {l}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Right block: actions — stacked on mobile, horizontal on larger */}
+          <div className="flex gap-2 mt-2 md:mt-0">
+            <button
+              onClick={refresh}
+              className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm min-w-[88px]"
+            >
+              Refresh
+            </button>
+
+            <button
+              onClick={exportApprovedCSV}
+              className="px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-400 text-sm min-w-[88px]"
+            >
+              Export CSV
+            </button>
+
+            <button
+              onClick={() => {
+                setQuery("");
+                setListingFilter("All");
+              }}
+              className="px-3 py-2 bg-white border rounded hover:bg-gray-50 text-sm min-w-[88px]"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
       </section>
 
       <section>
         <h2 className="text-lg font-semibold mb-3">
-          Reviews {loading ? <span className="text-sm text-gray-500"> (loading…)</span> : `(${filtered.length})`}
+          Reviews{" "}
+          {loading ? (
+            <span className="text-sm text-gray-500"> (loading…)</span>
+          ) : (
+            `(${filtered.length})`
+          )}
         </h2>
 
         {loading ? (
