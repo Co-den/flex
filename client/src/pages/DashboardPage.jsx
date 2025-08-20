@@ -30,13 +30,43 @@ const DashboardPage = () => {
   } = useReviews();
 
   const [chartListing, setChartListing] = React.useState(null);
+  const [animateIn, setAnimateIn] = React.useState(false);
   const activeListing = chartListing || listingFilter;
 
-  // CSV export helper
-  const exportApprovedCSV = () => {
-    const approved = reviews.filter((r) => r.approved);
-    if (!approved.length) {
-      alert("No approved reviews to export.");
+  // Memoized filtered reviews
+  const filtered = React.useMemo(
+    () =>
+      reviews.filter((r) => {
+        const text = (r.publicReview || "").toLowerCase();
+        const guest = (r.guestName || "").toLowerCase();
+        const listing = (r.listingName || "").toLowerCase();
+        const qLower = (query || "").toLowerCase();
+
+        const matchesQuery =
+          text.includes(qLower) || guest.includes(qLower) || listing.includes(qLower);
+
+        const matchesListing =
+          !activeListing || activeListing === "All" ? true : r.listingName === activeListing;
+
+        return matchesQuery && matchesListing;
+      }),
+    [reviews, query, activeListing]
+  );
+
+  // Animate cards in when loading completes
+  React.useEffect(() => {
+    if (loading) {
+      setAnimateIn(false);
+      return;
+    }
+    const t = setTimeout(() => setAnimateIn(true), 60);
+    return () => clearTimeout(t);
+  }, [loading]);
+
+  // Export currently filtered reviews to CSV
+  const exportFilteredCSV = () => {
+    if (!filtered.length) {
+      alert("No reviews to export (filtered set is empty).");
       return;
     }
 
@@ -49,11 +79,12 @@ const DashboardPage = () => {
       "categories",
       "channel",
       "_id",
+      "approved",
     ];
 
     const lines = [
       headers.join(","),
-      ...approved.map((r) => {
+      ...filtered.map((r) => {
         const vals = [
           `"${(r.guestName || "").replace(/"/g, '""')}"`,
           `"${(r.listingName || "").replace(/"/g, '""')}"`,
@@ -63,6 +94,7 @@ const DashboardPage = () => {
           `"${(Array.isArray(r.categories) ? r.categories.map(c => `${c.category}:${c.rating}`).join("|") : "")}"`,
           `"${(r.channel || "").replace(/"/g, '""')}"`,
           `"${r._id}"`,
+          `${r.approved ? "true" : "false"}`,
         ];
         return vals.join(",");
       }),
@@ -72,28 +104,12 @@ const DashboardPage = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `approved_reviews_${new Date().toISOString()}.csv`;
+    a.download = `filtered_reviews_${new Date().toISOString()}.csv`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
   };
-
-  // Filter using the correct fields (publicReview, guestName, listingName)
-  const filtered = reviews.filter((r) => {
-    const text = (r.publicReview || "").toLowerCase();
-    const guest = (r.guestName || "").toLowerCase();
-    const listing = (r.listingName || "").toLowerCase();
-    const qLower = (query || "").toLowerCase();
-
-    const matchesQuery =
-      text.includes(qLower) || guest.includes(qLower) || listing.includes(qLower);
-
-    const matchesListing =
-      !activeListing || activeListing === "All" ? true : r.listingName === activeListing;
-
-    return matchesQuery && matchesListing;
-  });
 
   const listingSummary = listings
     .filter((l) => l !== "All")
@@ -141,13 +157,12 @@ const DashboardPage = () => {
 
   return (
     <>
-      {/* Responsive controls: search + listing select + actions */}
+      {/* Responsive controls: stacked on mobile, horizontal on md+ */}
       <section className="mb-4">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          {/* Left block: search + listing */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 md:gap-3 w-full md:w-auto">
-            {/* Search input — full width on mobile */}
-            <div className="w-full sm:w-auto flex-1">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+          {/* Left: search + sort group */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 w-full sm:w-auto">
+            <div className="w-full sm:w-80">
               <label htmlFor="search" className="sr-only">
                 Search reviews
               </label>
@@ -157,12 +172,11 @@ const DashboardPage = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search text / guest / listing"
-                className="w-full md:w-80 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
               />
             </div>
 
-            {/* Listing filter — full width on mobile, auto on larger */}
-            <div className="w-full sm:w-auto">
+            <div className="w-full sm:w-56">
               <label htmlFor="listingFilter" className="sr-only">
                 Filter by listing
               </label>
@@ -170,7 +184,7 @@ const DashboardPage = () => {
                 id="listingFilter"
                 value={listingFilter}
                 onChange={(e) => setListingFilter(e.target.value)}
-                className="w-full md:w-56 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full mt-2 sm:mt-0 px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-400"
               >
                 {listings.map((l) => (
                   <option key={l} value={l}>
@@ -181,8 +195,8 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Right block: actions — stacked on mobile, horizontal on larger */}
-          <div className="flex gap-2 mt-2 md:mt-0">
+          {/* Right: actions */}
+          <div className="flex gap-2 mt-2 sm:mt-0">
             <button
               onClick={refresh}
               className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm min-w-[88px]"
@@ -191,7 +205,7 @@ const DashboardPage = () => {
             </button>
 
             <button
-              onClick={exportApprovedCSV}
+              onClick={exportFilteredCSV}
               className="px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-400 text-sm min-w-[88px]"
             >
               Export CSV
@@ -213,11 +227,7 @@ const DashboardPage = () => {
       <section>
         <h2 className="text-lg font-semibold mb-3">
           Reviews{" "}
-          {loading ? (
-            <span className="text-sm text-gray-500"> (loading…)</span>
-          ) : (
-            `(${filtered.length})`
-          )}
+          {loading ? <span className="text-sm text-gray-500"> (loading…)</span> : `(${filtered.length})`}
         </h2>
 
         {loading ? (
@@ -238,11 +248,14 @@ const DashboardPage = () => {
         ) : (
           <div className="grid gap-3">
             {filtered.map((r) => (
-              <ReviewCard
+              <div
                 key={r._id}
-                review={r}
-                onToggleApprove={() => handleToggleApprove(r._id)}
-              />
+                className={`transform transition-all duration-400 ${
+                  animateIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+                }`}
+              >
+                <ReviewCard review={r} onToggleApprove={() => handleToggleApprove(r._id)} />
+              </div>
             ))}
             {filtered.length === 0 && (
               <div className="text-gray-500">No reviews match your filters.</div>
