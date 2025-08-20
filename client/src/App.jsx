@@ -71,6 +71,13 @@ export default function App() {
           <div className="flex md:hidden items-center gap-2">
             {/* compact inline buttons for slightly larger phones (>=sm) */}
             <div className="hidden sm:flex gap-2">
+  <button
+                onClick={openDashboard}
+                className="px-3 py-2 bg-orange-600 text-white rounded text-sm w-full"
+                style={{ minWidth: 110 }}
+              >
+                Dashboard
+              </button>
               <button
                 onClick={() => openPublic(publicListing || "")}
                 className="px-3 py-2 bg-green-600 text-white rounded text-sm w-full"
@@ -78,13 +85,7 @@ export default function App() {
               >
                 Public
               </button>
-              <button
-                onClick={openDashboard}
-                className="px-3 py-2 bg-orange-600 text-white rounded text-sm w-full"
-                style={{ minWidth: 110 }}
-              >
-                Dashboard
-              </button>
+            
             </div>
 
             {/* hamburger for very small screens */}
