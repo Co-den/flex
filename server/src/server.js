@@ -12,7 +12,8 @@ const app = express();
 const allowedOrigins=[
   "https://flex-1-o88e.onrender.com",
   "http://localhost:5173",
-  "https://flex-living-virid.vercel.app/"
+  "https://flex-living-virid.vercel.app",
+  "https://flex-1-o88e.onrender.com/api/reviews/hostaway"
 ];
 
 app.use(cors({
