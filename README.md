@@ -145,17 +145,6 @@ This will:
 
 ---
 
-## 📸 Screenshots
-
-### Dashboard
-
-*(Admin dashboard with review list, approve/reject & sync)*
-
-### Public Page
-
-*(Property details with reviews & dropdown for switching)*
-
----
 
 ## 📝 Future Improvements
 
@@ -173,4 +162,3 @@ Software Developer | MERN Stack
 
 ---
 
-Would you like me to **add example screenshots** (placeholders) inside the README so when you upload later you just replace with real ones?
