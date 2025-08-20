@@ -25,6 +25,10 @@ pids
 .env.test.local
 .env.production.local
 config.env
+<<<<<<< HEAD
+=======
+
+>>>>>>> refs/remotes/origin/main
 # Coverage reports
 coverage/
 *.lcov
