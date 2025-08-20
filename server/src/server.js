@@ -33,6 +33,36 @@ app.get("/_health", (req, res) => res.json({ ok: true }));
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/listings", listingRoutes);
 
+// DEBUG helpers: list registered routes and log incoming requests
+function listRoutes(app) {
+  const routes = [];
+  (app._router?.stack || []).forEach(mw => {
+    if (mw.route) {
+      // direct route
+      routes.push({ path: mw.route.path, methods: Object.keys(mw.route.methods).join(",") });
+    } else if (mw.name === 'router' && mw.handle && mw.handle.stack) {
+      // router mounted: try to find mount path via regexp
+      const mountPath = mw.regexp && mw.regexp.source ? mw.regexp.source.replace('\\/?', '').replace('(?=\\/|$)', '') : '';
+      mw.handle.stack.forEach(r => {
+        if (r.route) routes.push({ path: (mountPath || '') + r.route.path, methods: Object.keys(r.route.methods).join(",") });
+      });
+    }
+  });
+  console.log("=== Registered routes (truncated) ===");
+  routes.forEach(r => console.log(r.methods.padEnd(10), r.path));
+  console.log("=====================================");
+}
+
+// request logger (light)
+app.use((req, res, next) => {
+  console.log(`[REQ] ${req.method} ${req.originalUrl} from ${req.ip} origin=${req.get('origin') || '-'}`);
+  next();
+});
+
+// call listing right away so we can see what's mounted at startup
+listRoutes(app);
+
+
 // serve static if needed later
 const PORT = process.env.PORT || 5000;
 
