@@ -1,10 +1,10 @@
-🏡 Property Reviews Dashboard
+Dashboard
 
 A modern, mobile-responsive dashboard for property managers to view, manage, and publish guest reviews from multiple platforms.
 
 ✨ Features
 
-Manager Dashboard
+Flex Living Dashboard
 
 📊 Per-Property Performance KPIs (avg rating, total reviews, approved reviews, published reviews).
 
@@ -64,14 +64,18 @@ APIs Integrated: Hostaway, Airbnb, Google Places
 │   │   ├── components/     # UI components (KPIs, Filters, ReviewTable, etc.)
 │   │   ├── pages/          # Dashboard + Public Review Pages
 │   │   ├── api/            # API client logic
+|   |   ├── hooks/           
 │   │   └── App.jsx
 │   └── package.json
 │
 ├── server/                 # Node.js backend
-│   ├── controllers/        # Review controller logic
+│   ├── controllers/        # logic for all controller
+|   ├── data/               # mock-data
+|   ├── integration/        # google Api
 │   ├── models/             # Mongoose schemas
 │   ├── routes/             # API routes
-│   ├── services/           # API integrations (Hostaway, Airbnb, Google)
+|   ├── utils/              # utilities
+│   ├── seed/               
 │   └── server.js
 │
 ├── README.md
@@ -84,8 +88,8 @@ APIs Integrated: Hostaway, Airbnb, Google Places
 
 1. Clone the repo
 
-git clone https://github.com/yourusername/property-reviews-dashboard.git
-cd property-reviews-dashboard
+git clone https://github.com/Co-den/flex.git
+cd flex
 
 2. Setup backend
 
@@ -107,7 +111,7 @@ npm run dev
 
 cd client
 npm install
-npm start
+npm run dev
 
 
 ---
