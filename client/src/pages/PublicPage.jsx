@@ -1,4 +1,3 @@
-// client/src/pages/PublicPage.jsx
 import React, { useState, useEffect } from "react";
 import { usePublicListing } from "../hooks/usePublicListing";
 import { useListings } from "../hooks/useListing";
@@ -50,25 +49,31 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
   };
 
   return (
-    <div className="mt-6" aria-busy={loading}>
-      <div className="flex items-center justify-between mb-4 gap-3">
+    <div className="mt-6 px-3 sm:px-0" aria-busy={loading}>
+      {/* Top controls: back + title on left, select + toggle on right.
+          On small screens these stack vertically. */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <button onClick={onBack} className="text-blue-600 hover:underline mr-2">
+          <button
+            onClick={onBack}
+            className="text-blue-600 hover:underline px-2 py-1 rounded bg-white shadow-sm"
+          >
             ← Back
           </button>
-          <span className="text-gray-700">Public Property View</span>
+          <span className="text-gray-700 font-medium">Public Property View</span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex w-full sm:w-auto gap-2 items-center">
           {listingsLoading ? (
             <div className="text-sm text-gray-500">Loading listings…</div>
           ) : listingsError ? (
             <div className="text-sm text-red-600">{listingsError}</div>
           ) : (
+            // make select full width on mobile
             <select
               value={selectedListing}
               onChange={handleChange}
-              className="border px-3 py-2 rounded"
+              className="border px-3 py-2 rounded w-full sm:w-auto"
               aria-label="Select property"
             >
               <option value="">Select a property…</option>
@@ -81,7 +86,7 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
           )}
 
           {/* Google toggle */}
-          <label className="inline-flex items-center ml-2 text-sm">
+          <label className="inline-flex items-center ml-0 sm:ml-2 text-sm">
             <input
               type="checkbox"
               checked={showGoogle}
@@ -108,23 +113,23 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
           <div className="text-gray-500">No property found for “{selectedListing}”.</div>
         ) : (
           <>
-            {/* hero image */}
+            {/* hero image: responsive height for mobile vs desktop */}
             {localListing.heroImage ? (
               <SafeImage
                 src={localListing.heroImage}
                 alt={localListing.listingName}
-                className="w-full h-56 object-cover rounded-lg mb-4"
+                className="w-full h-44 sm:h-56 object-cover rounded-lg mb-4"
               />
             ) : (
-              <div className="w-full h-56 bg-gray-100 rounded-lg mb-4 flex items-center justify-center text-gray-400">
+              <div className="w-full h-44 sm:h-56 bg-gray-100 rounded-lg mb-4 flex items-center justify-center text-gray-400">
                 No hero image
               </div>
             )}
 
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-              <div>
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+              <div className="flex-1">
                 <h1 className="text-2xl font-bold">{localListing.listingName}</h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 mt-1">
                   {localListing.address ? `${localListing.address}, ` : ""}
                   {localListing.city}
                   {localListing.country ? `, ${localListing.country}` : ""}
@@ -132,9 +137,9 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
                 <Stars categories={localListing.categories || []} />
               </div>
 
-              <div className="text-sm text-gray-700">
+              <div className="text-sm text-gray-700 min-w-[160px]">
                 <div className="font-semibold">From £{localListing.nightlyFrom} / night</div>
-                <div>
+                <div className="mt-1">
                   {localListing.bedrooms} bd · {localListing.bathrooms} ba · sleeps {localListing.sleeps}
                   {localListing.sqft ? ` · ${localListing.sqft} sqft` : ""}
                 </div>
@@ -151,6 +156,7 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
               </ul>
             )}
 
+            {/* responsive gallery: 2 cols on small, 3 cols on md+ */}
             {localListing.gallery?.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
                 {localListing.gallery.map((src, i) => (
@@ -158,7 +164,7 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
                     key={i}
                     src={src}
                     alt={`${localListing.listingName} ${i + 1}`}
-                    className="w-full h-36 object-cover rounded"
+                    className="w-full h-28 sm:h-36 object-cover rounded"
                   />
                 ))}
               </div>
@@ -196,7 +202,7 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
               <div className="text-gray-600">Loading reviews…</div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <SkeletonReviewCard key={i} />
               ))}
@@ -205,11 +211,11 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
         ) : !reviews || reviews.length === 0 ? (
           <div className="text-gray-500">No approved reviews to display.</div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {reviews.map((r) => (
               <div key={r._id} className="border p-4 rounded hover:shadow-lg transition-shadow">
                 <div className="text-sm text-gray-500">{new Date(r.submittedAt).toLocaleDateString()}</div>
-                <div className="mt-2">{r.publicReview}</div>
+                <div className="mt-2 text-gray-800">{r.publicReview}</div>
                 <div className="text-sm text-gray-500 mt-2">— {r.guestName}</div>
                 <Stars categories={r.categories || r.reviewCategory || []} />
                 <div className="flex flex-wrap gap-1 mt-2">
@@ -254,14 +260,16 @@ export default function PublicPage({ listingName: initialListingName, onBack }) 
               {(!googleResult.reviews || googleResult.reviews.length === 0) ? (
                 <div className="text-gray-500">No Google reviews found for this listing.</div>
               ) : (
-                <div className="grid gap-3 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                   {googleResult.reviews.map((r, i) => (
                     <div key={i} className="border p-3 rounded">
                       <div className="flex items-center justify-between">
                         <div className="text-sm font-semibold">{r.authorName}</div>
                         <div className="text-sm text-gray-600">{r.rating} ★</div>
                       </div>
-                      <div className="text-sm text-gray-500">{r.relativeTimeDescription || (r.time ? new Date(r.time * 1000).toLocaleDateString() : "")}</div>
+                      <div className="text-sm text-gray-500">
+                        {r.relativeTimeDescription || (r.time ? new Date(r.time * 1000).toLocaleDateString() : "")}
+                      </div>
                       <div className="mt-2 text-gray-800">{r.text}</div>
                     </div>
                   ))}
