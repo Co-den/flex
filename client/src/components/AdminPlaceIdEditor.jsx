@@ -36,7 +36,7 @@ export default function AdminPlaceIdEditor({ listing, onUpdated }) {
           placeholder="ChIJ..."
           className="border px-3 py-2 rounded flex-1"
         />
-        <button onClick={save} disabled={saving} className="px-3 py-2 bg-blue-600 text-white rounded">
+        <button onClick={save} disabled={saving} className="px-3 py-2 bg-green-600 text-white rounded">
           {saving ? "Saving…" : "Save"}
         </button>
       </div>

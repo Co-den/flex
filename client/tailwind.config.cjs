@@ -11,8 +11,8 @@ module.exports = {
         black: "#1C1C1C",
         lemon: "#F9E600",
         yellow: "#FFB800",
-        green:  "#22c55e",
-        darkGreen:"#064e3b",
+        green:  "#064749",
+        darkGreen:"#064749",
         blue: '#1F51FF',
         fontFamily: {
           inter: ["Inter", "sans-serif"],

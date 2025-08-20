@@ -60,7 +60,7 @@ export default function App() {
             </button>
             <button
               onClick={() => openPublic(publicListing || "")}
-              className="px-4 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="px-4 py-2 bg-green-900 text-white font-semibold rounded hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400"
             >
               Public Page
             </button>
@@ -79,7 +79,7 @@ export default function App() {
               </button>
               <button
                 onClick={() => openPublic(publicListing || "")}
-                className="px-3 py-2 bg-green-600 text-white rounded text-sm w-full"
+                className="px-3 py-2 bg-darkGreen text-white rounded text-sm w-full"
                 style={{ minWidth: 110 }}
               >
                 Public

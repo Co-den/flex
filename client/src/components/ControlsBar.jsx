@@ -40,12 +40,12 @@ export default function ControlsBar({
 
         <div className="flex items-center gap-2">
           <label className="text-sm text-gray-600">From</label>
-          <input type="date" value={dateFrom} onChange={(e)=>setDateFrom(e.target.value)} className="px-2 py-2 border rounded"/>
+          <input type="date" value={dateFrom} onChange={(e)=>setDateFrom(e.target.value)} className="px-2 py-2 text-gray-600 border rounded"/>
           <label className="text-sm text-gray-600">To</label>
-          <input type="date" value={dateTo} onChange={(e)=>setDateTo(e.target.value)} className="px-2 py-2 border rounded"/>
+          <input type="date" value={dateTo} onChange={(e)=>setDateTo(e.target.value)} className="px-2 py-2 text-gray-600 border rounded"/>
         </div>
 
-        <select value={categoryFilter} onChange={(e)=>setCategoryFilter(e.target.value)} className="px-3 py-2 border rounded">
+        <select value={categoryFilter} onChange={(e)=>setCategoryFilter(e.target.value)} className="px-3 py-2  border rounded">
           <option value="">All categories</option>
           {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
