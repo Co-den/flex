@@ -1,186 +1,127 @@
+// client/src/pages/DashboardPage.jsx
 import React from "react";
-import ReviewCard from "../components/ReviewCard";
 import { useReviews } from "../hooks/useReviews";
+import { usePerformance, useTrends } from "../hooks/useReports";
+import ControlsBar from "../components/ControlsBar";
+import KPIs from "../components/KPIs";
+import TrendChart from "../components/TrendChart";
+import ReviewCard from "../components/ReviewCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import SkeletonReviewCard from "../components/SkeletonReviewCard";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
 
-ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
-
-const DashboardPage = () => {
+export default function DashboardPage() {
   const {
-    reviews,
-    listings,
-    query,
-    setQuery,
-    listingFilter,
-    setListingFilter,
-    handleToggleApprove,
-    refresh,
-    loading,
-    error,
+    reviews, listings,
+    query, setQuery,
+    listingFilter, setListingFilter,
+    categoryFilter, setCategoryFilter,
+    channelFilter, setChannelFilter,
+    minRating, setMinRating,
+    dateFrom, setDateFrom, dateTo, setDateTo,
+    page, setPage, limit,
+    loading, meta, refresh,
+    toggleApprove, toggleShowPublic,
   } = useReviews();
 
-  const [chartListing, setChartListing] = React.useState(null);
-  const activeListing = chartListing || listingFilter;
+  // performance for KPI (fetch last 30 days by default)
+  const from = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const to = new Date().toISOString();
+  const { data: perfData } = usePerformance(from, to);
+  // find performance row for current listing
+  const perfForListing = perfData.find(p => p._id === listingFilter) || {};
 
-  // Filter using the correct fields (publicReview, guestName, listingName)
-  const filtered = reviews.filter((r) => {
-    const text = (r.publicReview || "").toLowerCase();
-    const guest = (r.guestName || "").toLowerCase();
-    const listing = (r.listingName || "").toLowerCase();
-    const qLower = (query || "").toLowerCase();
-
-    const matchesQuery =
-      text.includes(qLower) || guest.includes(qLower) || listing.includes(qLower);
-
-    const matchesListing =
-      !activeListing || activeListing === "All" ? true : r.listingName === activeListing;
-
-    return matchesQuery && matchesListing;
-  });
-
-  const listingSummary = listings
-    .filter((l) => l !== "All")
-    .map((l) => {
-      const total = reviews.filter((r) => r.listingName === l).length;
-      const approved = reviews.filter((r) => r.listingName === l && r.approved).length;
-      return { listing: l, total, approved };
-    });
-
-  const chartData = {
-    labels: listingSummary.map((s) => s.listing),
-    datasets: [
-      {
-        label: "Approved",
-        data: listingSummary.map((s) => s.approved),
-        backgroundColor: listingSummary.map((s) =>
-          s.listing === chartListing ? "#16a34a" : "#4ade80"
-        ),
-      },
-      {
-        label: "Total",
-        data: listingSummary.map((s) => s.total),
-        backgroundColor: listingSummary.map((s) =>
-          s.listing === chartListing ? "#2563eb" : "#60a5fa"
-        ),
-      },
-    ],
-  };
-
-  const handleChartClick = (event, elements) => {
-    if (!elements || elements.length === 0) return;
-    const index = elements[0].index;
-    const clickedListing = chartData.labels[index];
-    setChartListing((prev) => (prev === clickedListing ? null : clickedListing));
-  };
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: { position: "top" },
-      tooltip: { mode: "index", intersect: false },
-    },
-    onClick: handleChartClick,
-  };
+  // trends for selected listing
+  const { data: trends } = useTrends(listingFilter === "All" ? "" : listingFilter, from, to);
 
   return (
-    <>
-      <section className="flex gap-2 mb-4" aria-hidden={loading}>
-        <input
-          className="border px-3 py-2 rounded w-full max-w-xs"
-          placeholder="Search text/guest/listing"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <select
-          className="border px-3 py-2 rounded"
-          value={listingFilter}
-          onChange={(e) => setListingFilter(e.target.value)}
-        >
-          {listings.map((l) => (
-            <option key={l} value={l}>
-              {l}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={refresh}
-          className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Refresh
-        </button>
-      </section>
+    <div>
+      <ControlsBar
+        listings={listings}
+        listingFilter={listingFilter} setListingFilter={setListingFilter}
+        query={query} setQuery={setQuery}
+        categoryFilter={categoryFilter} setCategoryFilter={setCategoryFilter}
+        channelFilter={channelFilter} setChannelFilter={setChannelFilter}
+        minRating={minRating} setMinRating={setMinRating}
+        dateFrom={dateFrom} setDateFrom={setDateFrom}
+        dateTo={dateTo} setDateTo={setDateTo}
+        onRefresh={refresh}
+        onExport={() => {
+          // export filtered via existing logic - quick reuse:
+          const csvRows = [
+            ["guestName","listingName","submittedAt","rating","publicReview","approved","showPublic"].join(","),
+            ...reviews.map(r => [
+              `"${(r.guestName||"").replace(/"/g,'""')}"`,
+              `"${(r.listingName||"").replace(/"/g,'""')}"`,
+              `"${r.submittedAt ? new Date(r.submittedAt).toISOString() : ""}"`,
+              `${r.rating ?? ""}`,
+              `"${(r.publicReview||"").replace(/"/g,'""')}"`,
+              `${r.approved ? "true": "false"}`,
+              `${r.showPublic ? "true" : "false"}`,
+            ].join(","))
+          ].join("\n");
+          const blob = new Blob([csvRows], { type: "text/csv" });
+          const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `reviews_export_${Date.now()}.csv`; a.click(); a.remove();
+        }}
+      />
 
-      <section>
-        <h2 className="text-lg font-semibold mb-3">
-          Reviews {loading ? <span className="text-sm text-gray-500"> (loading…)</span> : `(${filtered.length})`}
-        </h2>
+      <KPIs performance={perfForListing} listing={listingFilter} />
 
-        {loading ? (
-          <>
-            <div className="mb-4 flex items-center gap-3">
-              <LoadingSpinner size={28} />
-              <div className="text-gray-600">Loading reviews…</div>
-            </div>
-
-            <div className="grid gap-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <SkeletonReviewCard key={i} />
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* left column: property list & trends */}
+        <div className="lg:col-span-1">
+          <div className="p-4 bg-white rounded shadow mb-4">
+            <h4 className="font-semibold mb-2">Properties</h4>
+            <div className="space-y-2 max-h-64 overflow-auto">
+              {perfData.map(p => (
+                <div key={p._id} className="flex items-center justify-between">
+                  <button className={`text-left w-full py-2 ${p._id === listingFilter ? 'font-bold' : ''}`} onClick={() => setListingFilter(p._id)}>
+                    {p._id}
+                    <div className="text-xs text-gray-500">{Math.round(p.avgRating * 10)/10} avg • {p.totalReviews} reviews</div>
+                  </button>
+                  <div className="text-sm">{Math.round((p.approvedCount / Math.max(1, p.totalReviews)) * 100)}%</div>
+                </div>
               ))}
             </div>
-          </>
-        ) : error ? (
-          <div className="text-red-600">Failed to load reviews: {error}</div>
-        ) : (
-          <div className="grid gap-3">
-            {filtered.map((r) => (
-              <ReviewCard
-                key={r._id}
-                review={r}
-                onToggleApprove={() => handleToggleApprove(r._id)}
-              />
-            ))}
-            {filtered.length === 0 && (
-              <div className="text-gray-500">No reviews match your filters.</div>
-            )}
           </div>
-        )}
-      </section>
 
-      <section className="mt-6">
-        <h3 className="text-md font-semibold mb-2">Listing Summary</h3>
-        {listingSummary.map(({ listing, total, approved }) => (
-          <div key={listing} className="mb-1 text-sm">
-            {listing}: {approved}/{total} approved
+          <div className="p-4 bg-white rounded shadow">
+            <h4 className="font-semibold mb-3">Trends (30d)</h4>
+            {trends?.length ? <TrendChart series={trends} /> : <div className="text-gray-500">No trend data</div>}
           </div>
-        ))}
-      </section>
-
-      <section className="mt-8">
-        <h3 className="text-md font-semibold mb-2">Approval Chart</h3>
-        <div className="bg-white p-4 rounded shadow">
-          <Bar data={chartData} options={chartOptions} />
-          {chartListing && (
-            <button
-              onClick={() => setChartListing(null)}
-              className="mt-3 px-3 py-1 bg-gray-100 rounded hover:bg-gray-200 text-sm"
-            >
-              Clear chart filter
-            </button>
-          )}
         </div>
-      </section>
-    </>
-  );
-};
 
-export default DashboardPage;
+        {/* main column: review list */}
+        <div className="lg:col-span-3">
+          <h3 className="text-lg font-semibold mb-3">Reviews ({meta.total ?? reviews.length})</h3>
+
+          {loading ? (
+            <>
+              <div className="mb-4 flex items-center gap-3"><LoadingSpinner size={28}/><div>Loading...</div></div>
+              <div className="grid gap-3">
+                {Array.from({length:6}).map((_,i) => <SkeletonReviewCard key={i} />)}
+              </div>
+            </>
+          ) : (
+            <div className="grid gap-3">
+              {reviews.map(r => (
+                <ReviewCard key={r._id} review={r}
+                            onToggleApprove={() => toggleApprove(r._id)}
+                            onToggleShowPublic={() => toggleShowPublic(r._id)}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* pagination */}
+          <div className="mt-4 flex items-center justify-between">
+            <div className="text-sm text-gray-600">Page {page}</div>
+            <div className="flex gap-2">
+              <button disabled={page<=1} onClick={() => setPage(p => Math.max(1, p-1))} className="px-3 py-1 bg-gray-200 rounded">Prev</button>
+              <button onClick={() => setPage(p => p+1)} className="px-3 py-1 bg-gray-200 rounded">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

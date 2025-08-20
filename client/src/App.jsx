@@ -13,6 +13,12 @@ const App = () => {
         <h1 className="text-xl text-gray-800 font-bold">FlexLiving Reviews</h1>
         <div className="space-x-2">
           <button
+            onClick={() => setView("dashboard")}
+            className="px-3 py-1 bg-orange-600 text-white font-bold rounded hover:bg-orange-500"
+          >
+            Dashboard
+          </button>
+          <button
             onClick={() => {
               setPublicListing("Studio – Kingsland Road");
               setView("public");
@@ -21,22 +27,18 @@ const App = () => {
           >
             Public Page
           </button>
-          <button
-            onClick={() => setView("dashboard")}
-            className="px-3 py-1 bg-orange-600 text-white font-bold rounded hover:bg-orange-500"
-          >
-            Dashboard
-          </button>
         </div>
       </header>
 
-      {view === "public" && (
+      {(publicListing && view !== "dashboard") || view === "public" ? (
         <PublicPage
           listingName={publicListing}
-          onBack={() => setView("dashboard")}
+          onBack={() => {
+            setView("dashboard");
+            setPublicListing("");
+          }}
         />
-      )}
-      {view === "dashboard" && (
+      ) : (
         <DashboardPage
           onShowPublic={(listingName) => {
             setPublicListing(listingName);
