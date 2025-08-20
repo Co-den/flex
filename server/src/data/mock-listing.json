@@ -1,0 +1,40 @@
+[
+  {
+    "listingName": "2B N1 A - 29 Shoreditch Heights",
+    "slug": "29-shoreditch-heights-2b-n1-a",
+    "address": "29 Shoreditch Heights",
+    "city": "London",
+    "country": "UK",
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "sleeps": 4,
+    "sqft": 780,
+    "nightlyFrom": 189,
+    "heroImage": "https://images.unsplash.com/photo-1505691723518-36a5ac3b2d87?q=80&w=1200",
+    "gallery": [
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1200",
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200",
+      "https://images.unsplash.com/photo-1505691938895-1758d7feb522?q=80&w=1200"
+    ],
+    "highlights": ["Prime Shoreditch location", "Fast Wi-Fi", "Self check-in", "Washer/Dryer"],
+    "description": "Modern 2-bed flat in the heart of Shoreditch. Bright, quiet, and close to everything."
+  },
+  {
+    "listingName": "Studio – Kingsland Road",
+    "slug": "studio-kingsland-road",
+    "address": "Kingsland Road",
+    "city": "London",
+    "country": "UK",
+    "bedrooms": 0,
+    "bathrooms": 1,
+    "sleeps": 2,
+    "sqft": 380,
+    "nightlyFrom": 129,
+    "heroImage": "https://images.unsplash.com/photo-1505691723518-36a5ac3b2d87?q=80&w=1200",
+    "gallery": [
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=1200"
+    ],
+    "highlights": ["Compact & stylish", "Great transport links", "Work desk"],
+    "description": "Cozy studio near vibrant eateries and nightlife. Ideal for short city stays."
+  }
+]
