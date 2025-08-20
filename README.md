@@ -156,10 +156,5 @@ AI sentiment analysis for deeper insights.
 
 👨‍💻 Author
 
-Built with ❤️ by [Your Name]
-
-
----
-
-Do you want me to also add screenshots/preview images (desktop + mobile) in the README so it looks polished for the assessment?
+Built with ❤️ by Agugbue Ikenna Nzubechi 
 
