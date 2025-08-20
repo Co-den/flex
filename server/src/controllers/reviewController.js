@@ -5,12 +5,9 @@ const { normalizeRaw } = require("../utils/normalize");
 const fs = require("fs");
 const path = require("path");
 const { ObjectId } = require("mongodb");
-const dotenv = require("dotenv"); 
-dotenv.config({path:".env"});
+const dotenv = require("dotenv");
+dotenv.config({ path: ".env" });
 const calculateAverage = require("../utils/calculateAverage");
-
-
-
 
 exports.getHostaway = async (req, res) => {
   try {
@@ -94,7 +91,6 @@ exports.getHostaway = async (req, res) => {
     res.status(500).json({ status: "error", message: err.message });
   }
 };
-
 
 exports.updateReview = async (req, res) => {
   try {
