@@ -2,11 +2,13 @@
 import React from "react";
 
 export default function KPIs({ performance = {}, listing }) {
-  // performance is object with avgRating, totalReviews, approvedCount, showPublicCount
-  const avg = performance?.avgRating ? Number(performance.avgRating).toFixed(2) : "--";
-  const total = performance?.totalReviews ?? 0;
-  const approved = performance?.approvedCount ?? 0;
-  const showPublic = performance?.showPublicCount ?? 0;
+  // tolerance: ensure numbers
+  const avg = (performance?.avgRating !== undefined && performance.avgRating !== null)
+    ? Number(performance.avgRating).toFixed(2)
+    : "--";
+  const total = Number(performance?.totalReviews ?? 0);
+  const approved = Number(performance?.approvedCount ?? 0);
+  const showPublic = Number(performance?.showPublicCount ?? 0);
   const approvalPct = total ? Math.round((approved / total) * 100) : 0;
 
   return (

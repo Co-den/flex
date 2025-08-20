@@ -27,8 +27,30 @@ export default function DashboardPage() {
   const from = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
   const to = new Date().toISOString();
   const { data: perfData } = usePerformance(from, to);
+
+
   // find performance row for current listing
-  const perfForListing = perfData.find(p => p._id === listingFilter) || {};
+ // dashboard: derive perfForListing but fall back to computing from reviews
+const perfForListingFromServer = perfData.find(p => p._id === listingFilter);
+let perfForListing = perfForListingFromServer || {};
+
+// incase the server didn't return a row for this listing
+// (or listing is "All"), compute locally
+if (!perfForListingFromServer) {
+  const rows = reviews.filter(r => listingFilter === "All" || r.listingName === listingFilter);
+  const totalLocal = rows.length;
+  const approvedLocal = rows.filter(r => r.approved).length;
+  const showPublicLocal = rows.filter(r => r.showPublic).length;
+  const avgLocal = totalLocal ? (rows.reduce((s, r) => s + (Number(r.rating) || 0), 0) / totalLocal) : null;
+
+  perfForListing = {
+    _id: listingFilter === "All" ? "All" : listingFilter,
+    avgRating: avgLocal,
+    totalReviews: totalLocal,
+    approvedCount: approvedLocal,
+    showPublicCount: showPublicLocal,
+  };
+}
 
   // trends for selected listing
   const { data: trends } = useTrends(listingFilter === "All" ? "" : listingFilter, from, to);
