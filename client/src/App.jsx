@@ -52,7 +52,7 @@ export default function App() {
 
           {/* Desktop buttons (md+) */}
           <div className="hidden md:flex items-center gap-3">
-         <button
+            <button
               onClick={openDashboard}
               className="px-4 py-2 bg-orange-600 text-white font-semibold rounded hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400"
             >
@@ -70,7 +70,7 @@ export default function App() {
           <div className="flex md:hidden items-center gap-2">
             {/* compact inline buttons for slightly larger phones (>=sm) */}
             <div className="hidden sm:flex gap-2">
-  <button
+              <button
                 onClick={openDashboard}
                 className="px-3 py-2 bg-orange-600 text-white rounded text-sm w-full"
                 style={{ minWidth: 110 }}
@@ -84,7 +84,6 @@ export default function App() {
               >
                 Public
               </button>
-            
             </div>
 
             {/* hamburger for very small screens */}
@@ -95,12 +94,21 @@ export default function App() {
                 aria-expanded={mobileMenuOpen}
                 aria-label="Open menu"
               >
-                <svg className="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <svg
+                  className="w-6 h-6 text-gray-700"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
                   <path
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                    d={
+                      mobileMenuOpen
+                        ? "M6 18L18 6M6 6l12 12"
+                        : "M4 6h16M4 12h16M4 18h16"
+                    }
                   />
                 </svg>
               </button>
@@ -108,16 +116,16 @@ export default function App() {
               {mobileMenuOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow z-50">
                   <button
-                    onClick={() => openPublic(publicListing || "")}
-                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    Public Page
-                  </button>
-                  <button
                     onClick={openDashboard}
                     className="w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
                     Dashboard
+                  </button>
+                  <button
+                    onClick={() => openPublic(publicListing || "")}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Public Page
                   </button>
                 </div>
               )}
@@ -128,7 +136,10 @@ export default function App() {
 
       <main>
         {view === "public" && (
-          <PublicPage listingName={publicListing} onBack={() => setView("dashboard")} />
+          <PublicPage
+            listingName={publicListing}
+            onBack={() => setView("dashboard")}
+          />
         )}
         {view === "dashboard" && (
           <DashboardPage
