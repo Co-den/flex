@@ -1,4 +1,4 @@
-Flex Living Dashboard
+## Flex Living Dashboard
 
 A modern, mobile-responsive dashboard for property managers to view, manage, and publish guest reviews from multiple platforms.
 
