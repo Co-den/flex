@@ -124,6 +124,7 @@ npm run dev
 
 ## 🌍 API Routes
 
+```
 GET /api/reviews/hostaway → Fetch Hostaway reviews
 
 GET /api/reviews/airbnb → Fetch Airbnb reviews
@@ -134,7 +135,7 @@ PATCH /api/reviews/:id/approve → Toggle approval status
 
 GET /api/reviews/public/:listingName → Get public reviews for a listing
 
-
+```
 
 ---
 
