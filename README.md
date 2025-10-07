@@ -1,21 +1,20 @@
-Dashboard
+Flex Living Dashboard
 
 A modern, mobile-responsive dashboard for property managers to view, manage, and publish guest reviews from multiple platforms.
 
-✨ Features
+## ✨ Features
 
-Flex Living Dashboard
+## 📊 Per-Property Performance KPIs (avg rating, total reviews, approved reviews, published reviews).
 
-📊 Per-Property Performance KPIs (avg rating, total reviews, approved reviews, published reviews).
+## 🔍 Filter & Sort reviews by rating, category, channel, or time.
 
-🔍 Filter & Sort reviews by rating, category, channel, or time.
+## 📈 Spot Trends using interactive charts.
 
-📈 Spot Trends using interactive charts.
+## ✅ Approve & Publish reviews to the public listing.
 
-✅ Approve & Publish reviews to the public listing.
+## 📱 Fully Responsive – works seamlessly on mobile, tablet, and desktop.
 
-📱 Fully Responsive – works seamlessly on mobile, tablet, and desktop.
-
+---
 
 Review Integrations
 
@@ -27,6 +26,7 @@ Airbnb (via API or scraping).
 
 Google Reviews (Google Places API).
 
+---
 
 Public Listings
 
