@@ -12,7 +12,7 @@ A modern, mobile-responsive dashboard for property managers to view, manage, and
 
 ✅ Approve & Publish reviews to the public listing.
 
-## 📱 Fully Responsive – works seamlessly on mobile, tablet, and desktop.
+📱 Fully Responsive – works seamlessly on mobile, tablet, and desktop.
 
 ---
 
