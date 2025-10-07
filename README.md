@@ -40,7 +40,7 @@ Optimized for SEO and performance.
 
 ---
 
-🚀 Tech Stack
+## 🚀 Tech Stack
 
 Frontend: React + TailwindCSS
 
@@ -56,8 +56,9 @@ APIs Integrated: Hostaway, Airbnb, Google Places
 
 ---
 
-📂 Project Structure
+## 📂 Project Structure
 
+```
 .
 ├── client/                 # React frontend
 │   ├── src/
@@ -81,18 +82,20 @@ APIs Integrated: Hostaway, Airbnb, Google Places
 ├── README.md
 └── package.json
 
-
+```
 ---
 
-⚡️ Installation
+## ⚡️ Installation
 
 1. Clone the repo
 
+```
 git clone https://github.com/Co-den/flex.git
 cd flex
 
+```
 2. Setup backend
-
+```
 cd server
 npm install
 
@@ -107,16 +110,19 @@ Run server:
 
 npm run dev
 
+```
 3. Setup frontend
 
+```
 cd client
 npm install
 npm run dev
 
+```
 
 ---
 
-🌍 API Routes
+## 🌍 API Routes
 
 GET /api/reviews/hostaway → Fetch Hostaway reviews
 
@@ -132,7 +138,7 @@ GET /api/reviews/public/:listingName → Get public reviews for a listing
 
 ---
 
-📱 Mobile Responsiveness
+## 📱 Mobile Responsiveness
 
 Search + filter stack vertically on mobile.
 
@@ -144,7 +150,7 @@ Review table becomes scrollable on small screens.
 
 ---
 
-🔮 Next Steps
+## 🔮 Next Steps
 
 Add authentication for managers (login/logout).
 
@@ -158,7 +164,7 @@ AI sentiment analysis for deeper insights.
 
 ---
 
-👨‍💻 Author
+## 👨‍💻 Author
 
 Built with ❤️ by Agugbue Ikenna Nzubechi 
 
